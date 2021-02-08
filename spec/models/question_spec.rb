@@ -8,5 +8,6 @@ RSpec.describe Question, type: :model do
 
     it { should_not allow_value(500).for(:level) }
     it { should allow_value(14).for(:level) }
+    it { should_not allow_value(15).for(:level) }
   end
 end
