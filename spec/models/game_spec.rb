@@ -43,4 +43,18 @@ RSpec.describe Game, type: :model do
       expect(game_w_questions.finished?).to be_falsey
     end
   end
+
+  context '.take_money!' do
+    it 'return correct data when game finished' do
+      game_w_questions.answer_current_question!(game_w_questions.current_game_question.correct_answer_key)
+
+      game_w_questions.take_money!
+
+      expect(game_w_questions.prize).to be > 0
+
+      expect(game_w_questions.status).to eq :money
+      expect(game_w_questions.finished?).to be_truthy
+      expect(user.balance).to eq game_w_questions.prize
+    end
+  end
 end
