@@ -16,5 +16,10 @@ RSpec.describe GameQuestion, type: :model do
     it 'correct .answer_correct?' do
       expect(game_question.answer_correct?('b')).to be_truthy
     end
+
+    it 'return .level and .game correct data' do
+      expect(game_question.level).to eq(game_question.question.level)
+      expect(game_question.text).to eq(game_question.question.text)
+    end
   end
 end
