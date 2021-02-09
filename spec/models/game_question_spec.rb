@@ -22,4 +22,10 @@ RSpec.describe GameQuestion, type: :model do
       expect(game_question.text).to eq(game_question.question.text)
     end
   end
+
+  describe '#correct_answer_key' do
+    it 'should return correct answer what is equal to b variant'do
+      expect(game_question.correct_answer_key).to eq("b")
+    end
+  end
 end
