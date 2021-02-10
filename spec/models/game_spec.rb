@@ -3,7 +3,6 @@ require 'support/my_spec_helper'
 
 RSpec.describe Game, type: :model do
   let(:user) { FactoryGirl.create(:user) }
-
   let(:game_w_questions) { FactoryGirl.create(:game_with_questions, user: user) }
 
   context 'Game Factory' do
@@ -97,10 +96,9 @@ RSpec.describe Game, type: :model do
   end
 
   describe "#answer_current_question!" do
+    let(:correct_answer_key) { game_w_questions.current_game_question.correct_answer_key }
+    
     it "should return true if correct answer" do
-      level = game_w_questions.current_level
-      correct_answer_key = game_w_questions.game_questions[level].correct_answer_key
-
       expect(game_w_questions.answer_current_question!(correct_answer_key)).to eq true
     end
 
@@ -110,17 +108,11 @@ RSpec.describe Game, type: :model do
 
     it "should return false if time is out" do
       game_w_questions.created_at = Game::TIME_LIMIT.ago
-      level = game_w_questions.current_level
-      correct_answer_key = game_w_questions.game_questions[level].correct_answer_key
-
       expect(game_w_questions.answer_current_question!(correct_answer_key)).to eq false
     end
 
     it "should return true if last question is true" do
-      game_w_questions.current_level = 14 # отсчет от 0, как индекс
-      level = game_w_questions.current_level
-      correct_answer_key = game_w_questions.game_questions[level].correct_answer_key
-
+      game_w_questions.current_level = Question::QUESTION_LEVELS.max
       expect(game_w_questions.answer_current_question!(correct_answer_key)).to eq true
     end
   end
