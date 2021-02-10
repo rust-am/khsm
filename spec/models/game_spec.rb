@@ -97,7 +97,7 @@ RSpec.describe Game, type: :model do
 
   describe "#answer_current_question!" do
     let(:correct_answer_key) { game_w_questions.current_game_question.correct_answer_key }
-    
+
     it "should return true if correct answer" do
       expect(game_w_questions.answer_current_question!(correct_answer_key)).to eq true
     end
