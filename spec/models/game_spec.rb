@@ -100,20 +100,28 @@ RSpec.describe Game, type: :model do
 
     it "should return true if correct answer" do
       expect(game_w_questions.answer_current_question!(correct_answer_key)).to eq true
+      expect(game_w_questions.finished?).to be false
+      expect(game_w_questions.status).to eq :in_progress
     end
 
     it "should return false if not correct answer" do
       expect(game_w_questions.answer_current_question!('something')).to eq false
+      expect(game_w_questions.finished?).to be true
+      expect(game_w_questions.status).to eq :fail
     end
 
     it "should return false if time is out" do
       game_w_questions.created_at = Game::TIME_LIMIT.ago
       expect(game_w_questions.answer_current_question!(correct_answer_key)).to eq false
+      expect(game_w_questions.finished?).to be true
+      expect(game_w_questions.status).to eq :timeout
     end
 
     it "should return true if last question is true" do
       game_w_questions.current_level = Question::QUESTION_LEVELS.max
       expect(game_w_questions.answer_current_question!(correct_answer_key)).to eq true
+      expect(game_w_questions.finished?).to be true
+      expect(game_w_questions.status).to eq :won
     end
   end
 end
