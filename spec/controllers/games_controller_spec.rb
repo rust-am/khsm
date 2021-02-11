@@ -58,7 +58,7 @@ RSpec.describe GamesController, type: :controller do
       end
     end
   end
-  
+
   # группа тестов на экшены контроллера, доступных залогиненным юзерам
   context 'Usual user' do
     # перед каждым тестом в группе
@@ -151,7 +151,9 @@ RSpec.describe GamesController, type: :controller do
       context "when user answer incorrect" do
         it 'check game/level and redirect to the user page' do
           # передаем параметр params[:letter]
-          put :answer, id: game_w_questions.id, letter: 'c'
+          current_game_question = game_w_questions.current_game_question
+          incorrect_answer = (current_game_question.variants.keys - [current_game_question.correct_answer_key]).sample
+          put :answer, id: game_w_questions.id, letter: incorrect_answer
           game = assigns(:game)
 
           expect(game.finished?).to eq true
