@@ -9,9 +9,9 @@ RSpec.describe GamesController, type: :controller do
   let(:game_w_questions) { FactoryGirl.create(:game_with_questions, user: user) }
 
   # группа тестов для незалогиненного юзера (Анонимус)
-  context 'Anon' do
+  context 'when Anon user trying to open game page(#show)' do
     # из экшена show анона посылаем
-    it 'kick from #show' do
+    it 'show alert and redirect to login page' do
       # вызываем экшен
       get :show, id: game_w_questions.id
       # проверяем ответ
@@ -21,6 +21,42 @@ RSpec.describe GamesController, type: :controller do
     end
   end
 
+  context 'when Anon user trying to create game (#create)' do
+    it 'return nil game, show alert and redirect to login page' do
+      post :create
+      game = assigns(:game) # тянем игру
+
+      expect(game).to eq nil # проверяем отсутствие
+      expect(response.status).not_to eq(200)
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to be
+    end
+  end
+
+  context 'when Anon user trying to give an answer (#answer)' do
+    it 'return nil game, show alert and redirect to login page' do
+      put :answer, id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key
+      game = assigns(:game)
+
+      expect(game).to eq nil
+      expect(response.status).not_to eq(200)
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to be
+    end
+  end
+
+  context 'when Anon user trying to take money in game (#take_money)' do
+    it 'return nil game, show alert and redirect to login page' do
+      put :take_money, id: game_w_questions.id
+      game = assigns(:game)
+
+      expect(game).to eq nil
+      expect(response.status).not_to eq(200)
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to be
+    end
+  end
+  
   # группа тестов на экшены контроллера, доступных залогиненным юзерам
   context 'Usual user' do
     # перед каждым тестом в группе
@@ -111,5 +147,7 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to redirect_to(game_path(game_w_questions))
       expect(flash[:alert]).to be
     end
+
+
   end
 end
