@@ -204,5 +204,21 @@ RSpec.describe GamesController, type: :controller do
       expect(game.current_game_question.help_hash[:audience_help].keys).to contain_exactly('a', 'b', 'c', 'd')
       expect(response).to redirect_to(game_path(game))
     end
+
+    it 'check fifty_fifty availability' do
+      expect(game_w_questions.current_game_question.help_hash[:fifty_fifty]).not_to be
+      expect(game_w_questions.fifty_fifty_used).to eq false
+
+      put :help, id: game_w_questions.id, help_type: :fifty_fifty
+      game = assigns(:game)
+
+      expect(game.finished?).to eq false
+      expect(game.fifty_fifty_used).to eq true
+      # проверяем наличие
+      expect(game.current_game_question.help_hash[:fifty_fifty]).to be
+      # что имеет варианта
+      expect(game.current_game_question.help_hash[:fifty_fifty].size).to eq(2)
+      expect(response).to redirect_to(game_path(game))
+    end
   end
 end
