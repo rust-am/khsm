@@ -218,6 +218,8 @@ RSpec.describe GamesController, type: :controller do
       expect(game.current_game_question.help_hash[:fifty_fifty]).to be
       # что имеет варианта
       expect(game.current_game_question.help_hash[:fifty_fifty].size).to eq(2)
+      # имеет правильный вариант
+      expect(game.current_game_question.help_hash[:fifty_fifty]).to include(game.current_game_question.correct_answer_key)
       expect(response).to redirect_to(game_path(game))
     end
   end
