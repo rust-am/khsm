@@ -36,7 +36,7 @@ RSpec.describe GameQuestion, type: :model do
   #   friend_call: 'Василий Петрович считает, что правильный ответ A'
   # }
 
-  context 'user helpers' do
+  context 'users helpers' do
     it 'correct audience_help' do
       expect(game_question.help_hash).not_to include(:audience_help)
 

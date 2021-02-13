@@ -10,8 +10,8 @@ RSpec.describe GamesController, type: :controller do
   let(:game_w_questions) { FactoryGirl.create(:game_with_questions, user: user) }
 
   # группа тестов для незалогиненного юзера (Анонимус)
-  describe "Anon user" do
-    context 'when Anon user trying to open game page(#show)' do
+  describe "Anon users" do
+    context 'when Anon users trying to open game page(#show)' do
       # из экшена show анона посылаем
       it 'show alert and redirect to login page' do
         # вызываем экшен
@@ -23,7 +23,7 @@ RSpec.describe GamesController, type: :controller do
       end
     end
 
-    context 'when Anon user trying to create game (#create)' do
+    context 'when Anon users trying to create game (#create)' do
       it 'return nil game, show alert and redirect to login page' do
         post :create
         game = assigns(:game) # тянем игру
@@ -35,7 +35,7 @@ RSpec.describe GamesController, type: :controller do
       end
     end
 
-    context 'when Anon user trying to give an answer (#answer)' do
+    context 'when Anon users trying to give an answer (#answer)' do
       it 'return nil game, show alert and redirect to login page' do
         put :answer, id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key
         game = assigns(:game)
@@ -47,7 +47,7 @@ RSpec.describe GamesController, type: :controller do
       end
     end
 
-    context 'when Anon user trying to take money in game (#take_money)' do
+    context 'when Anon users trying to take money in game (#take_money)' do
       it 'return nil game, show alert and redirect to login page' do
         put :take_money, id: game_w_questions.id
         game = assigns(:game)
@@ -61,14 +61,14 @@ RSpec.describe GamesController, type: :controller do
   end
 
   # группа тестов на экшены контроллера, доступных залогиненным юзерам
-  context 'Usual user' do
+  context 'Usual users' do
     # перед каждым тестом в группе
-    before(:each) { sign_in user } # логиним юзера user с помощью спец. Devise метода sign_in
+    before(:each) { sign_in user } # логиним юзера users с помощью спец. Devise метода sign_in
 
     describe "#show" do
       # юзер видит свою игру
-      context "when user open the game(#show)" do
-        it 'check user and render user page' do
+      context "when users open the game(#show)" do
+        it 'check users and render users page' do
           get :show, id: game_w_questions.id
           game = assigns(:game) # вытаскиваем из контроллера поле @game
 
@@ -80,13 +80,13 @@ RSpec.describe GamesController, type: :controller do
         end
       end
 
-      context "when user trying to open other user game" do
+      context "when users trying to open other users game" do
         # проверка, что пользовтеля посылают из чужой игры
         it 'redirect to root and flash alert' do
           # создаем новую игру, юзер не прописан, будет создан фабрикой новый
           alien_game = FactoryGirl.create(:game_with_questions)
 
-          # пробуем зайти на эту игру текущий залогиненным user
+          # пробуем зайти на эту игру текущий залогиненным users
           get :show, id: alien_game.id
 
           expect(response.status).not_to eq(200) # статус не 200 ОК
@@ -97,7 +97,7 @@ RSpec.describe GamesController, type: :controller do
     end
 
     describe "#create" do
-      context "when user create game" do
+      context "when users create game" do
         # юзер может создать новую игру
         it 'creates game' do
           # сперва накидаем вопросов, из чего собирать новую игру
@@ -115,7 +115,7 @@ RSpec.describe GamesController, type: :controller do
         end
       end
 
-      context "when user trying to create new game while old one not finished" do
+      context "when users trying to create new game while old one not finished" do
         # юзер пытается создать новую игру, не закончив старую
         it 'redirect to not finished game' do
           # убедились что есть игра в работе
@@ -136,7 +136,7 @@ RSpec.describe GamesController, type: :controller do
 
     describe "#answer" do
       # юзер отвечает на игру корректно - игра продолжается
-      context "when user answer correct" do
+      context "when users answer correct" do
         it 'check game and redirect to the second question' do
           # передаем параметр params[:letter]
           put :answer, id: game_w_questions.id, letter: game_w_questions.current_game_question.correct_answer_key
@@ -149,8 +149,8 @@ RSpec.describe GamesController, type: :controller do
         end
       end
 
-      context "when user answer incorrect" do
-        it 'check game/level and redirect to the user page' do
+      context "when users answer incorrect" do
+        it 'check game/level and redirect to the users page' do
           # передаем параметр params[:letter]
           current_game_question = game_w_questions.current_game_question
           incorrect_answer = (current_game_question.variants.keys - [current_game_question.correct_answer_key]).sample
@@ -167,8 +167,8 @@ RSpec.describe GamesController, type: :controller do
 
     describe "#take_money" do
       # юзер берет деньги
-      context " wnen user takes money" do
-        it 'game ends, balance increases and user redirect to user page' do
+      context " wnen users takes money" do
+        it 'game ends, balance increases and users redirect to users page' do
           # вручную поднимем уровень вопроса до выигрыша 200
           game_w_questions.update_attribute(:current_level, 2)
 
