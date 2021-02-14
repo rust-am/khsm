@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'users/show', type: :view do
-  let(:game) { FactoryGirl.build_stubbed(:game, id: 10, created_at: Time.parse('2019.10.09, 13:00'), current_level: 5, prize: 1000) }
+  let(:game) { FactoryGirl.build_stubbed(:game, created_at: Time.parse('2019.10.09, 13:00'), current_level: 6, prize: 1_000) }
   let(:user1) { FactoryGirl.create(:user, name: 'user1', balance: 32_000) }
   let(:user2) { FactoryGirl.create(:user, name: 'user2', balance: 2_000) }
 
@@ -24,7 +24,7 @@ RSpec.describe 'users/show', type: :view do
     it 'show game elements' do
       render partial: 'users/game', object: game
 
-      expect(rendered).to match '10'
+      expect(rendered).to match "#{game.id}"
       expect(rendered).to match '09 окт., 13:00'
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe 'users/show', type: :view do
 
     it 'show game elements' do
       render partial: 'users/game', object: game
-      expect(rendered).to match '10'
+      expect(rendered).to match "#{game.id}"
       expect(rendered).to match '09 окт., 13:00'
     end
   end
